@@ -5,7 +5,7 @@
 ;; Author: ffrances
 ;; Maintainer:
 ;; Created: sam. mars  2 22:17:04 2019 (+0100)
-;; Version: 0.1
+;; Version: 0.2
 ;; Package-Requires: ()
 ;;
 ;; Keywords: frame opacity
@@ -15,14 +15,16 @@
 ;;
 ;;; Commentary:
 ;;
+;; This file is not part of GNU Emacs.
+;;
 ;;  insert in your init file
 ;;  (require 'frame-opacity)
-;; 
-;;  C-prior / C-next change opacity relatively.
+;;
 ;;
 ;;  `frame-opacity-set' set frame opacity to a fixed value.
 ;;  `frame-opacity-change-relative' change opacity relatively.
 ;;  `frame-opacity-set-key' set default key mapping to change opacity.
+;;      -> C-prior / C-next change opacity relatively.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -47,12 +49,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+(defun frame-opacity-bound-calc (opacity)
+  "Bound opacity between `frame-alpha-lower-limit' and 100."
+  (cond ((> opacity 100 )
+         100)
+        ((< opacity frame-alpha-lower-limit)
+         frame-alpha-lower-limit)
+        (t opacity)))
+
+
 (defun frame-opacity-set (opacity)
   "Set frame OPACITY."
   (interactive "nopacity:")
-  (when (and (>= opacity frame-alpha-lower-limit) (<= opacity 100))
-    (message "opacity set to %d" opacity)
-    (modify-frame-parameters nil (list (cons 'alpha opacity)))))
+  (message "opacity set to %d" (frame-opacity-bound-calc opacity))
+  (modify-frame-parameters nil (list (cons 'alpha
+                                           (frame-opacity-bound-calc opacity)))))
 
 (defun frame-opacity-change-relative (&optional value)
   "Increase or decrease opacity by VALUE.
@@ -61,11 +72,7 @@ if VALUE is not defined call (`frame-opacity-set' 100)."
   (if value
     (let* ((alpha-or-nil (frame-parameter nil 'alpha))
            (oldalpha (if alpha-or-nil alpha-or-nil 100))
-           (newalpha (+ oldalpha value)))
-      (when (>= newalpha 100)
-        (setq newalpha 100))
-      (when (<= newalpha frame-alpha-lower-limit)
-        (setq newalpha frame-alpha-lower-limit))
+           (newalpha (frame-opacity-bound-calc (+ oldalpha value))))
       (modify-frame-parameters nil (list (cons 'alpha newalpha))))
     (frame-opacity-set 100)))
 
