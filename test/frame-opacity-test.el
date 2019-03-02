@@ -46,71 +46,55 @@
 ;;; Code:
 (require 'ert)
 
+(defun test-frame-opacity-set (value expect)
+  "Test opacity value"
+    (frame-opacity-set 50)
+    (message "Set opacity to %d expect %d" value expect)
+    (frame-opacity-set value)
+    (should (equal expect (frame-parameter nil 'alpha))))
+
+(defun test-frame-opacity-change-relative (start delta expect)
+  "Test frame opacity change relative"
+  (frame-opacity-set start)
+  (message "relative-change %d, delta %d, expect %d" start delta expect)
+  (frame-opacity-change-relative delta)
+  (should (equal expect (frame-parameter nil 'alpha))))
 
 (ert-deftest frame-opacity-set-100-test ()
   "Test `frame-opacity-set'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set 50)
-    (frame-opacity-set 100)
-    (should (equal 100 (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-set 100 100))
 
 (ert-deftest frame-opacity-set-above-100-test ()
   "Test `frame-opacity-set'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set 50)
-    (frame-opacity-set 120)
-    (should (equal 100 (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-set 120 100))
 
+(ert-deftest frame-opacity-set-50-test ()
+  "Test `frame-opacity-set'."
+  (test-frame-opacity-set 50 50))
 
 (ert-deftest frame-opacity-set-lower-limit-test ()
   "Test `frame-opacity-set'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set 50)
-    (frame-opacity-set frame-alpha-lower-limit)
-    (should (equal frame-alpha-lower-limit (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-set frame-alpha-lower-limit frame-alpha-lower-limit))
 
 (ert-deftest frame-opacity-set-below-lower-limit-test ()
   "Test `frame-opacity-set'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set 50)
-    (frame-opacity-set (- frame-alpha-lower-limit 10))
-    (should (equal frame-alpha-lower-limit (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-set (- frame-alpha-lower-limit  10) frame-alpha-lower-limit))
 
 (ert-deftest frame-opacity-change-relative-plus-test ()
   "Test `frame-opacity-change-relative'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set 50)
-    (frame-opacity-change-relative 10)
-    (should (equal 60 (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-change-relative 50 10 60))
 
 (ert-deftest frame-opacity-change-relative-minus-test ()
   "Test `frame-opacity-change-relative'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set 50)
-    (frame-opacity-change-relative -10)
-    (should (equal 40 (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-change-relative 50 -10 40))
 
 (ert-deftest frame-opacity-change-relative-above-limit-test ()
   "Test `frame-opacity-change-relative'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set 95)
-    (frame-opacity-change-relative 10)
-    (should (equal 100 (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-change-relative 95 10 100))
 
 (ert-deftest frame-opacity-change-relative-below-lower-limit-test ()
   "Test `frame-opacity-change-relative'."
-  (let ((saved-opacity  (frame-parameter nil 'alpha)))
-    (frame-opacity-set (+ 5 frame-alpha-lower-limit))
-    (frame-opacity-change-relative -10)
-    (should (equal frame-alpha-lower-limit (frame-parameter nil 'alpha)))
-    (frame-opacity-set saved-opacity)))
+  (test-frame-opacity-change-relative (+ frame-alpha-lower-limit 5) -10 frame-alpha-lower-limit))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; frame-opacity-test.el ends here
