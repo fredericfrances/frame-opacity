@@ -1,12 +1,12 @@
 language: emacs-lisp
 dist: trusty
 env:
-  - EMACS_VERSION=25.2
+  - EMACS_VERSION=24.5
   # - EMACS_VERSION=snapshot
 before_install:
   # Use packaged emacs
   - sudo apt-get -qq update
-  - sudo apt-get -qq install emacs25-nox
+  - sudo apt-get -qq install emacs24-nox
   # Install cask
   - mkdir -p $HOME/bin
   - export PATH="$HOME/bin:$PATH"
