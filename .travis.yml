@@ -6,7 +6,7 @@ env:
 before_install:
   # Use packaged emacs
   - sudo apt-get -qq update
-  - sudo apt-get -qq install emacs24-nox
+  - sudo apt-get -qq install emacs24
   # Install cask
   - mkdir -p $HOME/bin
   - export PATH="$HOME/bin:$PATH"
