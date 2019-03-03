@@ -80,6 +80,13 @@
   "Test `frame-opacity-set'."
   (test-frame-opacity-set (- frame-alpha-lower-limit  10) frame-alpha-lower-limit))
 
+(ert-deftest frame-opacity-change-relative-change-nil-test ()
+  "Test `frame-opacity-change-relative'."
+  (frame-opacity-set 50)
+  (frame-opacity-change-relative)
+  (should (equal 100 (frame-parameter nil 'alpha))))
+
+
 (ert-deftest frame-opacity-change-relative-plus-test ()
   "Test `frame-opacity-change-relative'."
   (test-frame-opacity-change-relative 50 10 60))
