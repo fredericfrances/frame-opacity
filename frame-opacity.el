@@ -5,7 +5,7 @@
 ;; Author: ffrances
 ;; Maintainer:
 ;; Created: sam. mars  2 22:17:04 2019 (+0100)
-;; Version: 0.2
+;; Version: 0.3
 ;; Package-Requires: ()
 ;;
 ;; Keywords: frame opacity
@@ -19,12 +19,12 @@
 ;;
 ;;  insert in your init file
 ;;  (require 'frame-opacity)
+;;  (global-set-key [C-next]  '(lambda () (interactive) (frame-opacity-change-relative +5)))
+;;  (global-set-key [C-prior] '(lambda () (interactive) (frame-opacity-change-relative -5)))
 ;;
 ;;
 ;;  `frame-opacity-set' set frame opacity to a fixed value.
 ;;  `frame-opacity-change-relative' change opacity relatively.
-;;  `frame-opacity-set-key' set default key mapping to change opacity.
-;;      -> C-prior / C-next change opacity relatively.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -75,13 +75,6 @@ if VALUE is not defined call (`frame-opacity-set' 100)."
            (newalpha (frame-opacity-bound-calc (+ oldalpha value))))
       (modify-frame-parameters nil (list (cons 'alpha newalpha))))
     (frame-opacity-set 100)))
-
-(defun frame-opacity-set-key()
-  "Set key for `frame-opacity'."
-  (interactive)
-  (global-set-key [C-next]  '(lambda () (interactive) (frame-opacity-change-relative +5)))
-  (global-set-key [C-prior] '(lambda () (interactive) (frame-opacity-change-relative -5))))
-
 
 (provide 'frame-opacity)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
